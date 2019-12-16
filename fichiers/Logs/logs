@@ -1,0 +1,21 @@
+[11/30/19 - 21:26:03] Incapable de créer le FIFO (côté client)
+[11/30/19 - 21:40:54] Incapable de créer le FIFO (côté serveur)
+[11/30/19 - 21:42:27] Incapable de créer le FIFO (côté client)
+[11/30/19 - 21:44:35] Incapable de créer le FIFO (côté client)
+[11/30/19 - 21:51:20] Incapable de créer le FIFO (côté serveur)
+[12/02/19 - 21:15:42] Incapable de créer le FIFO (côté serveur) []
+[12/02/19 - 21:17:04] Incapable de créer le FIFO (côté serveur) [/cygdrive/c/Users/fsiga/Desktop/OS/server]
+[12/02/19 - 21:17:54] Incapable de créer le FIFO (côté serveur) [/cygdrive/c/Users/fsiga/Desktop/OS/server]
+[12/02/19 - 21:24:55] Incapable de créer le FIFO (côté serveur) [Under : /cygdrive/c/Users/fsiga/Desktop/OS/server / logsUtils.c]
+[12/02/19 - 21:26:00] Incapable de créer le FIFO (côté serveur) [Under : /cygdrive/c/Users/fsiga/Desktop/OS/server / write_logs]
+[12/02/19 - 21:27:45] Incapable de créer le FIFO (côté serveur) [Under : /cygdrive/c/Users/fsiga/Desktop/OS/server]
+[12/02/19 - 21:28:47] Incapable de créer le FIFO (côté serveur) [Under : server.c]
+[12/02/19 - 21:29:27] Incapable de créer le FIFO (côté serveur) [Under : main]
+[12/02/19 - 21:41:28] Incapable de créer le FIFO (côté serveur) [Under : file: server.c in function: main]
+[12/02/19 - 21:43:06] Incapable de créer le FIFO (côté serveur) [file: server.c in function: main/cygdrive/c/Users/fsiga/Desktop/OS/server]
+[12/02/19 - 21:47:22] Incapable de créer le FIFO (côté serveur) [Under : /cygdrive/c/Users/fsiga/Desktop/OS/server/server.c in functionmain]
+[12/02/19 - 22:08:17] Incapable de créer le FIFO (côté serveur) [Under : /cygdrive/c/Users/fsiga/Desktop/OS/server/server.c in function : main (ligne 23 )]
+[12/02/19 - 22:13:43] Incapable de créer le FIFO (côté serveur) [ Under : /cygdrive/c/Users/fsiga/Desktop/OS/server/server.c in function main (line 23) ]
+[12/02/19 - 22:14:56] Incapable de créer le FIFO (côté serveur) [ Under : /cygdrive/c/Users/fsiga/Desktop/OS/server/server.c in function main (line 23) ]
+[12/02/19 - 22:18:55] Incapable de créer le FIFO (côté serveur) [ Under : /cygdrive/c/Users/fsiga/Desktop/OS/server/server.c in function main (line 23) ]
+[12/09/19 - 17:19:16] Incapable de créer le FIFO (côté serveur) [ Under : /cygdrive/c/Users/fsiga/Desktop/OS/server/server.c in function main (line 23) ]
