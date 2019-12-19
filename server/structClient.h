@@ -21,5 +21,6 @@ struct Liste
 /* PROTOTYPES DES FONCTIONS DE MANIPULATION DE LA LISTE */
 LISTE *init_client(int pid); //Retourne une liste de CLIENT dont le premier élément est le permier client
 void insert_client_at_end(LISTE *liste, int pid); //Rajoute un client à la fin de la liste
+void supprimer(LISTE* list, int pid); //Supprime l'élément dont le pid est égal à "pid"
 
 #endif

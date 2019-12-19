@@ -5,7 +5,6 @@
 #include "dialogue.h"
 #include "traitement.h"
 
-#define PATH_TO_QUESTIONS_RESPONSES "/cygdrive/c/Users/fsiga/Desktop/OS_I2/fichiers/QuestionsReponses/qr.txt"
 
 SERVEUR traitement(char *pidAndQuestion)
 {
@@ -25,6 +24,16 @@ SERVEUR traitement(char *pidAndQuestion)
         if(!strcasecmp(question,dialogue[i].question))
         {
             strcpy(traitement.response,dialogue[i].reponse);
+        }
+        /* CRTL+C in the client */
+        else if(!strcasecmp(question,"KillMePlease!"))
+        {
+            strcpy(traitement.response,"NeedToKillThisPid");
+        }
+        /* The cclient send its PID at the beginning */
+        else if(!strcasecmp(question,"ThisIsMyPid!"))
+        {
+            strcpy(traitement.response,"NeedToSaveThisPid");
         }
     }
     return traitement;

@@ -15,7 +15,7 @@ DIALOGUE *stock_dialogue(char *filePath)
 
     if(dialogue==NULL)
     {
-        write_logs("Erreur d'allocation mémoire à la récupération des questions/réponses dans le fichier",getCurrentPath(__FILE__,__FUNCTION__,__LINE__));
+        write_logs("Malloc allocation error (server side)",getCurrentPath(__FILE__,__FUNCTION__,__LINE__));
         exit(EXIT_FAILURE);
     }
     else
@@ -25,7 +25,7 @@ DIALOGUE *stock_dialogue(char *filePath)
 
         if(file == NULL)
         {
-            write_logs("Erreur lors de l'ouverture du fichier de questions/réponses (Function stock_dialogue))",getCurrentPath(__FILE__,__FUNCTION__,__LINE__));
+            write_logs("Error while trying to open the questions/reponses file (server side)",getCurrentPath(__FILE__,__FUNCTION__,__LINE__));
             exit(EXIT_FAILURE);
         }
         else
@@ -51,7 +51,7 @@ int line_number(char *filePath)
 
     if(file == NULL)
     {
-        write_logs("Erreur lors de l'ouverture du fichier de questions/réponses (Function line_number())",getCurrentPath(__FILE__,__FUNCTION__,__LINE__));
+        write_logs("Error while trying to open the questions/reponses file (server side)",getCurrentPath(__FILE__,__FUNCTION__,__LINE__));
         exit(EXIT_FAILURE);
     }
     else

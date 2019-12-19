@@ -20,6 +20,8 @@ int my_string_scanf(char *chaine, int longueur)
     if (fgets(chaine, longueur, stdin) != NULL)
     {
         if(!strcmp(chaine,"\n")) strcpy(chaine," \n"); // Si la chaine est vide, on met un espace pour ne pas faire planter les algo de traitements
+        if(!strcmp(chaine,"KillMePlease!\n")) strcpy(chaine," KillMePlease!\n");
+        if(!strcmp(chaine,"ThisIsMyPid!\n")) strcpy(chaine," ThisIsMyPid!\n");
    
         positionEntree = strchr(chaine, '\n');
         if (positionEntree != NULL)

@@ -20,7 +20,7 @@ void write_logs(char *buf, char *path)
     }
     else
     {
-        puts("Log error!");
+        puts("Log error! Can't open the log file. Please verify the path of the file under logsUtils.h");
     }
 }
 
