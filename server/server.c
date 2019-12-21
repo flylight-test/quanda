@@ -1,3 +1,4 @@
+
 // Server side
 #include <stdio.h> 
 #include <stdlib.h>
@@ -9,134 +10,150 @@
 #include <unistd.h> 
 #include "logsUtils.h"
 #include "color.h"
+#include "filePid.h"
 #include "traitement.h"
-#include "structClient.h"
+#include "dialogue.h"
+#include "scan.h"
 
-#define PUBLIC_FIFO "/cygdrive/c/Users/fsiga/Desktop/OS_I2/fichiers/PUBLIC/fifo"
-#define PRIVATE "/cygdrive/c/Users/fsiga/Desktop/OS_I2/fichiers/PRIVATE"
+#define PUBLIC_FIFO "../fichiers/PUBLIC/fifo"
+#define PRIVATE "../fichiers/PRIVATE"
 
-/* CTR+C => Unlink the PUBLIC fifo and all the PRIVATE fifo, then leave */
-void unlinkAllFifo();
-
-/* Stock all the clients PID in this linked list */
-LISTE *clientPidList=NULL ;
+void deletAllPidFromFile();
+int serverIsNotRunning();
 
 int main() 
 { 
-	signal(SIGINT,unlinkAllFifo);
-
-    int private_descriptor=-1;
-    int public_descriptor=-1;
-    char clientPidAndQuestion[256]={0};
-    char private_fifo[256];
-    SERVEUR server ;
+    /* Can't handle more than one server*/
+    if(serverIsNotRunning())
+    {
+	int bot;
+    
+	//Child process which is waitting for the client messages
+	if((bot=fork())==0)
+	{
+	    int private_descriptor=-1;
+	    int public_descriptor=-1;
+	    char clientPidAndQuestion[256]={0};
+	    char private_fifo[256];
+	    SERVEUR server ;
   
   	
-  	unlink(PUBLIC_FIFO);
+	    unlink(PUBLIC_FIFO);
 
-    if((mkfifo(PUBLIC_FIFO, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)) == -1)
-    {
-    	write_logs("Cannot creat the PUBLIC fifo (server side)",getCurrentPath(__FILE__,__FUNCTION__,__LINE__));
-        exit(EXIT_FAILURE);
+	    if((mkfifo(PUBLIC_FIFO, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)) == -1)
+	    {
+		write_logs("Cannot creat the PUBLIC fifo (server side)",getCurrentPath(__FILE__,__FUNCTION__,__LINE__));
+		exit(EXIT_FAILURE);
+	    }
+	    else
+	    {	
+		while(1) 
+		{ 
+		    if((public_descriptor=open(PUBLIC_FIFO,O_RDONLY)) < 0)
+		    {
+			write_logs("Cannot connect to the public file descriptor (server side)",getCurrentPath(__FILE__,__FUNCTION__,__LINE__));
+			exit(EXIT_FAILURE);
+		    }
+		    else
+		    {
+			/* Read the client request */
+			read(public_descriptor, clientPidAndQuestion, sizeof(clientPidAndQuestion));
+			close(public_descriptor);
+			server=traitement(clientPidAndQuestion);
+		   
+			/* Send a response to the client */
+		    
+			sprintf(private_fifo,"%s/%d",PRIVATE,server.client_pid);
+		    
+			if((private_descriptor=open(private_fifo,O_WRONLY)) < 0)
+			{
+			    write_logs("Cannot connect to the private file descriptor (server side)",getCurrentPath(__FILE__,__FUNCTION__,__LINE__));
+			    exit(EXIT_FAILURE);
+			}
+			else
+			{
+			    write(private_descriptor, server.response, strlen(server.response)+1);
+			    close(private_descriptor);
+			}
+		    }
+		}
+	    } 
+	}
+	// Parent process which can create some new clients
+	else
+	{
+	    char user_choice[3];
+	
+	    signal(SIGINT,deletAllPidFromFile);
+	
+	    while(1)
+	    {
+		green();
+		puts("Do you wanna create a new client ? (y/n)");
+		reset();
+		white();
+		my_string_scanf(user_choice,3);
+		reset();
+	    
+		if(!strcmp(user_choice,"y\0"))
+		{
+		    int client;
+		    if((client=fork())==0)
+		    {
+			execl("/usr/bin/xterm","xterm","-fa","fixed","-e","../client/client","client",NULL);
+		    }
+		    else
+		    {	
+			/* sleep(2) to make sure that the client has written his PID in the file before  reading it with readLast() */
+			sleep(2);
+			red();
+			printf("Console launched with pid %d which launched the client with pid %d \n",client,readLast());
+			reset();
+		    }
+		}
+	    }
+	}
     }
     else
     {
-    	while(1) 
-	    { 
-	        if((public_descriptor=open(PUBLIC_FIFO,O_RDONLY)) < 0)
-	        {
-	        	write_logs("Cannot connect to the public file descriptor (server side)",getCurrentPath(__FILE__,__FUNCTION__,__LINE__));
-                exit(EXIT_FAILURE);
-	        }
-	        else
-	        {
-	        	read(public_descriptor, clientPidAndQuestion, sizeof(clientPidAndQuestion));
-		        close(public_descriptor);
-		  		server=traitement(clientPidAndQuestion);
-		  		/* If the client CTRL+C, we unlink its PRIVATE fifo */
-		  		if(!strcasecmp(server.response,"NeedToKillThisPid"))
-		  		{
-		  			supprimer(clientPidList, server.client_pid);
-		  			char delet_private_fifo[256];
-		  			sprintf(delet_private_fifo,"%s/%d",PRIVATE,server.client_pid);
-		  			unlink(delet_private_fifo);
-		  		}
-		  		/* When the client is created, we stock its PID in the linked list */
-		  		else if(!strcasecmp(server.response,"NeedToSaveThisPid"))
-		  		{
-		  			if(clientPidList==NULL)
-		  			{
-		  				clientPidList=init_client(server.client_pid);
-		  			}
-		  			else
-		  			{
-		  				insert_client_at_end(clientPidList, server.client_pid);
-		  			}
-		  		}
-		  		/* Otherwise, send a response to the client */
-		  		else
-		  		{
-		  			/*
-		  			if(clientPidList==NULL)
-		  			{
-		  				clientPidList=init_client(server.client_pid);
-		  			}
-		  			else
-		  			{
-		  				insert_client_at_end(clientPidList, server.client_pid);
-		  			}
-		  			*/
-
-		  			sprintf(private_fifo,"%s/%d",PRIVATE,server.client_pid);
-
-		        	if((private_descriptor=open(private_fifo,O_WRONLY)) < 0)
-		        	{
-		        		write_logs("Cannot connect to the private file descriptor (server side)",getCurrentPath(__FILE__,__FUNCTION__,__LINE__));
-                		exit(EXIT_FAILURE);
-		        	}
-		        	else
-		        	{
-		        		write(private_descriptor, server.response, strlen(server.response)+1);
-		        		close(private_descriptor);
-		        	}
-		  		}
-
-	        }
-	    } 
+	green();
+	write_logs("A server is already open",getCurrentPath(__FILE__,__FUNCTION__,__LINE__));
+	reset();
+	exit(EXIT_FAILURE);
     }
-
-    return 0; 
 }
 
-/* CTR+C => Unlink the PUBLIC fifo and all the PRIVATE fifo, then leave */
-void unlinkAllFifo()
+void deletAllPidFromFile()
 {
-	unlink(PUBLIC_FIFO);
-	char private_fifo[256];
-	
-	if(clientPidList != NULL && clientPidList->first_client != NULL)
-	{
-		CLIENT *going_at_end=clientPidList->first_client;
+    char fifoToDelet[256];
+    PID * pids=readPid();
 
-		sprintf(private_fifo,"%s/%d",PRIVATE,going_at_end->pid);
-		unlink(private_fifo);
-		green();
-    	printf("Private fifo %d has been deleted !\n",going_at_end->pid);
-    	reset();
-
-   	 	while(going_at_end->next_client!=NULL)
-    	{
-    		sprintf(private_fifo,"%s/%d",PRIVATE,going_at_end->next_client->pid);
-    		unlink(private_fifo);
-    		green();
-    		printf("Private fifo %d has been deleted !\n",going_at_end->next_client->pid);
-    		reset();
-    		going_at_end=going_at_end->next_client;
-    	}
+    /* Unlink all fifo */
+    unlink(PUBLIC_FIFO);
+    for(int i=0; i<line_number(PATH_TO_PID) ; i++)
+    {
+	sprintf(fifoToDelet,"%s/%d",PRIVATE,pids[i].pid);
+	unlink(fifoToDelet);
     }
     
-    	
+    /* Remove all pid from file */
+    clearFile();
+    
+    /* Leave the program */
     signal(SIGINT,SIG_DFL);
     kill(getpid(),SIGINT);
-    exit(EXIT_SUCCESS);
+}
+int serverIsNotRunning()
+{
+    int serverIsNotRunning;
+
+    if( access(PUBLIC_FIFO, F_OK) != -1)
+    {
+        serverIsNotRunning=0;
+    }
+    else
+    {
+        serverIsNotRunning=1;
+    }
+    return serverIsNotRunning;
 }

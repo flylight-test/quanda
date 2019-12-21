@@ -1,1 +1,2 @@
 Quel est ton nom ?;Je suis PI
+Qui est le plus fort ?;Moi.

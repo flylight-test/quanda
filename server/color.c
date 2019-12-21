@@ -13,7 +13,12 @@ void yellow()
 
 void green()
 {
-	printf(GREEN);
+    printf(GREEN);
+}
+
+void white()
+{
+    printf(WHITE);
 }
 
 void reset()

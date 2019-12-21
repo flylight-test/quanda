@@ -1,0 +1,12 @@
+#!/bin/bash
+
+tree
+
+
+if [ -e Pid/pid.txt ]
+then
+	echo -e "\033[1;31mContenu du fichier pid.txt :\033[0m"
+	cat Pid/pid.txt
+else
+	echo -e "\033[1;31mLe fichier pid.txt n'existe pas\033[0m"
+fi

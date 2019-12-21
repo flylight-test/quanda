@@ -4,10 +4,10 @@ EXE=client
 
 all : $(EXE) clean echo
 
-$(EXE) : client.o color.o logsUtils.o scan.o
+$(EXE) : client.o color.o logsUtils.o scan.o filePid.o
 	$(CC) -o $@ $^
 
-client.o : client.c scan.h color.h logsUtils.h
+client.o : client.c scan.h color.h logsUtils.h filePid.h
 	$(CC) -o $@ -c $< $(FLAGS)
 
 scan.o : scan.c
@@ -17,6 +17,9 @@ color.o : color.c
 	$(CC) -o $@ -c $< $(FLAGS)
 
 logsUtils.o : logsUtils.c
+	$(CC) -o $@ -c $< $(FLAGS)
+	
+filePid.o : filePid.c logsUtils.h
 	$(CC) -o $@ -c $< $(FLAGS)
 
 clean :

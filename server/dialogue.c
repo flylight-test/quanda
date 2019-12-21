@@ -33,7 +33,7 @@ DIALOGUE *stock_dialogue(char *filePath)
             while(fgets(ligne,sizeof(ligne),file) != NULL)
             {
                 strcpy(dialogue[index].question,strtok(ligne,";"));
-                strcpy(dialogue[index].reponse,strtok(NULL,";"));
+                strcpy(dialogue[index++].reponse,strtok(NULL,"\n"));
             }
             fclose(file);
 
@@ -51,7 +51,7 @@ int line_number(char *filePath)
 
     if(file == NULL)
     {
-        write_logs("Error while trying to open the questions/reponses file (server side)",getCurrentPath(__FILE__,__FUNCTION__,__LINE__));
+        write_logs("Error while trying to open the file (server side)",getCurrentPath(__FILE__,__FUNCTION__,__LINE__));
         exit(EXIT_FAILURE);
     }
     else

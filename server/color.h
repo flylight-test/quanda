@@ -6,11 +6,13 @@
 #define YELLOW "\033[1;33m"
 #define RED "\033[1;31m"
 #define GREEN "\033[1;32m"
+#define WHITE "\033[1;37m"
 #define BLACK "\033[0m"
 
 void red();
 void yellow();
 void green();
+void white();
 void reset();
 
 #endif
